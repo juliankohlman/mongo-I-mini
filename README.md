@@ -87,7 +87,7 @@ Configure the API to respond to the following routes:
 
 #### Endpoint Specifications
 
-When the client makes a `POST` request to `/api/bears`:
+### When the client makes a `POST` request to `/api/bears`:
 
 * If the request body is missing the `species` or `latinName` property:
 
@@ -106,14 +106,14 @@ When the client makes a `POST` request to `/api/bears`:
   * respond with HTTP status code `500` (Server Error).
   * return the following JSON object: `{ error: "There was an error while saving the Bear to the Database" }`.
 
-When the client makes a `GET` request to `/api/bears`:
+### When the client makes a `GET` request to `/api/bears`:
 
 * If there's an error in retrieving the _Bears_ from the database:
   * cancel the request.
   * respond with HTTP status code `500`.
   * return the following JSON object: `{ error: "The information could not be retrieved." }`.
 
-When the client makes a `GET` request to `/api/bears/:id`:
+### When the client makes a `GET` request to `/api/bears/:id`:
 
 * If the _Bear_ with the specified `id` is not found:
 
@@ -125,7 +125,7 @@ When the client makes a `GET` request to `/api/bears/:id`:
   * respond with HTTP status code `500`.
   * return the following JSON object: `{ error: "The information could not be retrieved." }`.
 
-When the client makes a `DELETE` request to `/api/bears/:id`:
+### When the client makes a `DELETE` request to `/api/bears/:id`:
 
 * If the _Bear_ with the specified `id` is not found:
 
@@ -137,7 +137,7 @@ When the client makes a `DELETE` request to `/api/bears/:id`:
   * respond with HTTP status code `500`.
   * return the following JSON object: `{ error: "The Bear could not be removed" }`.
 
-When the client makes a `PUT` request to `/api/bears/:id`:
+### When the client makes a `PUT` request to `/api/bears/:id`:
 
 * If the _Bear_ with the specified `id` is not found:
 
