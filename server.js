@@ -14,25 +14,78 @@ server.use(bodyParser.json());
 
 
 // connect server with mongoDB server
-
-
 server.get('/', function(req, res) {
   res.status(200).json({ status: 'API Running' });
 });
 
-// POST:CREATE
 server.post('/api/bears', (req, res) => {
   const bearInfo = req.body;
+  const { species, latinName } = req.body;
 
-  // mongoose document
-  const newbear = new bear(bearInfo);
-  newbear.save() // returns a promixe
-    .then((savedBear) => {
-      res.status(201).json(savedBear);
-    }).catch((err => {
-      res.status(500).json({err: 'there was an erro while saving bear to the database',})
-    }));
+  if (!species || !latinName) {
+    res.status(400).json({errorMessage: 'Please provide both species and latinName for the Bear.'});
+  } else {
+    const newBear = new bear(bearInfo);
+    newBear
+      .save()
+      .then(newBear => {
+        res.status(201).json(newBear);
+      })
+      .catch(error => {
+        res.status(500).json({ error: 'There was an error while saving the Bear to the Database'});
+      });
+  }
 })
+
+server.get('/api/bears', (req, res) => {
+  bear
+    .find({})
+    .then((bears) => {
+      res.status(200).json(bears)
+    }).catch((error) => {
+      res.status(500).json({ error: 'The information could not be retrieved.'})
+    });
+});
+
+server.get('/api/bears/:id', (req, res) => {
+  const id = req.params.id;
+  bear.findById(id).then(bear => {
+    if (bear) {
+      res.status(200).json(bear)
+    } else {
+      res.status(404).json({message: 'The Bear with the specified ID does not exist.'})
+    }
+  })
+  .catch((error) => {
+    res.status(500)
+    .json({ error: 'The information could not be retrieved.'})
+  });
+});
+
+server.delete('/api/bears/:id', (req, res) => {
+  const id = req.params.id;
+  bear.findByIdAndRemove(id)
+    .then(bear => {
+      return bear ? res.status(200).json({message: `The bear with ID:${id} was successfully deleted`}) :
+             res.status(404).json({ message: 'The Bear with the specified ID does not exist.'});
+    }).catch(error => {
+      res.status(500).json({ error: 'The Bear could not be removed'});
+    })
+})
+
+server.put('/api/bears/:id', (req, res) => {
+  const id = req.params.id;
+  const { species, latinName } = req.body;
+
+  bear.findByIdAndUpdate(id, req.body)
+    .then(updateBear => {
+      return updateBear ? res.status(201).json(updateBear) :
+                          res.status(404).json({error: `The Bear with the ID${id} does not exist.`});
+    }).catch(error => {
+      res.status(500).json({error: 'The Bear information could not be modified.'});
+    })
+})
+
 
 mongoose
   .connect('mongodb://localhost/BearKeeper') // returns a promise
